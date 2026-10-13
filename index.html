@@ -262,23 +262,6 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
     <div class="theremin-badge" id="thereminBadge">Theremin ON — move your pointer · click to stop</div>
   </div>
 
-  <!-- ═══ METRONOME BAR ═══ -->
-  <div class="dash-panel" style="padding:0.625rem 0.875rem">
-    <div style="display:flex;align-items:center;gap:0.625rem;flex-wrap:wrap">
-      <div id="metroIndicator" style="width:0.75rem;height:0.75rem;border-radius:50%;background:var(--border);transition:all .1s;flex-shrink:0"></div>
-      <button class="abtn" id="metroBtn" onclick="toggleMetronome()" style="height:2rem;padding:0 0.75rem;font-size:.6rem">⏯ Metronome</button>
-      <input type="range" min="40" max="200" value="80" style="width:6.25rem;accent-color:var(--cyan)" oninput="setMetroBpm(this.value)">
-      <span id="metroBpmLabel" style="font-family:'Orbitron',sans-serif;font-size:.65rem;color:var(--text-dim);min-width:3.75rem">80 BPM</span>
-      <div style="flex:1"></div>
-      <span class="label">Shape:</span>
-      <span id="shapeLabel" style="font-family:'Orbitron',sans-serif;font-size:.6rem;color:var(--accent);min-width:5rem">—</span>
-      <button class="vnav-btn" style="width:2rem;height:2rem;font-size:22px" onclick="prevShape()">◀</button>
-      <button class="vnav-btn" style="width:2rem;height:2rem;font-size:22px" onclick="nextShape()">▶</button>
-      <button class="abtn play" onclick="playScaleShape()" style="height:2rem;padding:0 0.75rem;font-size:.6rem">▶ Play Shape</button>
-      <button class="abtn repeat" id="repeatBtn" onclick="toggleRepeatScale()" style="height:2rem;padding:0 0.75rem;font-size:.6rem" title="Loop the scale">↻ Repeat Scale</button>
-    </div>
-  </div>
-
   <!-- TABS -->
   <div class="tabs">
     <button class="tab active" onclick="switchTab('scales',this)">📊 SCALES</button>
@@ -292,6 +275,24 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
       <div class="dash-panel-title">Fretboard</div>
       <div class="fretboard-container">
         <div class="fretboard" id="scaleFretboard"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PLAYBACK BAR ═══ -->
+    <div class="dash-panel" style="padding:0.625rem 0.875rem">
+      <div style="display:flex;align-items:center;gap:0.625rem;flex-wrap:wrap">
+        <div id="metroIndicator" style="width:0.75rem;height:0.75rem;border-radius:50%;background:var(--border);transition:all .1s;flex-shrink:0"></div>
+        <button class="abtn" id="metroBtn" onclick="toggleMetronome()" style="height:2rem;padding:0 0.75rem;font-size:.6rem">⏯ Metronome</button>
+        <input type="range" min="40" max="200" value="80" style="width:6.25rem;accent-color:var(--cyan)" oninput="setMetroBpm(this.value)">
+        <span id="metroBpmLabel" style="font-family:'Orbitron',sans-serif;font-size:.65rem;color:var(--text-dim);min-width:3.75rem">80 BPM</span>
+        <span style="display:inline-flex;align-items:center;gap:0.5rem;flex-wrap:nowrap">
+          <span class="label">Shape:</span>
+          <span id="shapeLabel" style="font-family:'Orbitron',sans-serif;font-size:.6rem;color:var(--accent);min-width:5rem">—</span>
+          <button class="vnav-btn" style="width:2rem;height:2rem;font-size:22px" onclick="prevShape()">◀</button>
+          <button class="vnav-btn" style="width:2rem;height:2rem;font-size:22px" onclick="nextShape()">▶</button>
+        </span>
+        <button class="abtn play" onclick="playScaleShape()" style="height:2rem;padding:0 0.75rem;font-size:.6rem">▶ Play Shape</button>
+        <button class="abtn repeat" id="repeatBtn" onclick="toggleRepeatScale()" style="height:2rem;padding:0 0.75rem;font-size:.6rem" title="Loop the scale">↻ Repeat Scale</button>
       </div>
     </div>
 
