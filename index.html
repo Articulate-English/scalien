@@ -144,6 +144,24 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 .oct-toggle:hover{border-color:var(--cyan);color:var(--cyan)}
 .oct-toggle.active{background:rgba(34,211,238,.12);border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 8px rgba(34,211,238,.15)}
 
+/* Header tools (theme + report bugs) */
+.header-tools{display:flex;justify-content:flex-end;gap:6px;margin-bottom:6px}
+.tool-btn{height:30px;padding:0 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text-muted);font-family:'Orbitron',sans-serif;font-size:.55rem;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.tool-btn:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 10px rgba(34,211,238,.15)}
+.theme-dot-preview{width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan);display:inline-block}
+
+/* Logo / theremin */
+.logo-wrap{cursor:pointer;user-select:none;-webkit-user-select:none;display:inline-block;position:relative}
+.space-invader-logo{transition:filter .2s,transform .2s}
+.logo-wrap.theremin-active .space-invader-logo{animation:thereminPulse .6s ease-in-out infinite alternate;cursor:crosshair}
+@keyframes thereminPulse{0%{transform:scale(1)}100%{transform:scale(1.06)}}
+.logo-wrap.theremin-active::after{content:'THEREMIN ON — move pointer';position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);font-family:'Orbitron',sans-serif;font-size:.5rem;letter-spacing:1px;color:var(--green);white-space:nowrap;text-shadow:0 0 8px var(--green)}
+
+/* Repeat Scale toggle */
+.abtn.repeat{border-color:var(--amber);color:var(--amber);background:rgba(251,191,36,.08)}
+.abtn.repeat.active{background:var(--amber);color:#000;box-shadow:0 0 14px rgba(251,191,36,.4)}
+.note-dot.playing{outline:2px solid var(--amber);outline-offset:1px}
+
 /* Responsive */
 @media(max-width:768px){
   .header h1{font-size:1.1rem}
@@ -165,7 +183,11 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 
   <!-- HEADER -->
   <div class="header">
-    <div class="logo-wrap">
+    <div class="header-tools">
+      <button class="tool-btn" id="themeCycleBtn" onclick="cycleTheme()" title="Cycle theme colour"><span class="theme-dot-preview"></span><span class="theme-name">Deep Ocean</span></button>
+      <button class="tool-btn" onclick="reportBug()" title="Report a bug on GitHub">Report Bugs</button>
+    </div>
+    <div class="logo-wrap" id="logoWrap" ondblclick="startTheremin()" onclick="onLogoClick()" title="Double-click the logo for a theremin · click to stop">
       <svg class="space-invader-logo" viewBox="0 0 100 100" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="logoGlow" x="-30%" y="-30%" width="160%" height="160%">
@@ -245,6 +267,7 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
       <button class="vnav-btn" style="width:28px;height:28px;font-size:11px" onclick="prevShape()">◀</button>
       <button class="vnav-btn" style="width:28px;height:28px;font-size:11px" onclick="nextShape()">▶</button>
       <button class="abtn play" onclick="playScaleShape()" style="height:32px;padding:0 12px;font-size:.6rem">▶ Play Shape</button>
+      <button class="abtn repeat" id="repeatBtn" onclick="toggleRepeatScale()" style="height:32px;padding:0 12px;font-size:.6rem" title="Loop the scale">↻ Repeat Scale</button>
     </div>
   </div>
 
@@ -267,6 +290,14 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
         <span class="label">Frets:</span>
         <input type="range" id="fretCount" min="4" max="24" value="12" style="width:80px;accent-color:var(--cyan)" oninput="renderScales()">
         <span class="label" id="fretCountLabel">12</span>
+      </div>
+      <div class="octave-controls" style="border-top:none;margin-top:8px;padding-top:0">
+        <span class="label">Play octaves:</span>
+        <button class="oct-toggle active" id="playOct1" onclick="setPlayOctaves(1)">1</button>
+        <button class="oct-toggle" id="playOct2" onclick="setPlayOctaves(2)">2</button>
+        <button class="oct-toggle" id="playOct3" onclick="setPlayOctaves(3)">3</button>
+        <span class="label" style="margin-left:10px">Start position:</span>
+        <span id="shapeLabel2" style="font-family:'Orbitron',sans-serif;font-size:.6rem;color:var(--cyan);min-width:120px">Root on 6th (1/5)</span>
       </div>
       <div class="octave-controls">
         <span class="label">Octaves:</span>
@@ -489,188 +520,193 @@ function setMetroBpm(v) {
   if (lbl) lbl.textContent = v + ' BPM';
 }
 
-// ═══════════════════════════════════════════
-// GUITAR SCALE SHAPES (position-based patterns)
-// ═══════════════════════════════════════════
-// Real guitar scale shapes: arrays of fret positions per string
-// Standard tuning E A D G B E, shapes define fret offsets from a root position
-// Each shape is [string6_fret, string5_fret, ... string1_fret] relative to root fret
+// (Legacy hard-coded SCALE_SHAPES removed — the scale engine below builds
+//  correctly transposed positions and ascending runs for any key.)
 
-var SCALE_SHAPES = {
-  'Major (Ionian)': {
-    // 5 positions of major scale (CAGED-based)
-    positions: [
-      { name: 'Position 1 (Root on 6th)', frets: [0, 2, 2, 1, 0, 0], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Position 2 (Root on 5th)', frets: [2, 4, 4, 3, 2, 2], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Position 3 (Root on 4th)', frets: [4, 5, 5, 5, 4, 4], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Position 4 (Root on 3rd)', frets: [5, 7, 7, 6, 5, 5], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Position 5 (Root on 1st)', frets: [7, 9, 9, 8, 7, 7], strings: [0, 1, 2, 3, 4, 5] },
-    ]
-  },
-  'Natural Minor (Aeolian)': {
-    positions: [
-      { name: 'Pos 1 (Root 6th)', frets: [0, 1, 3, 3, 1, 0], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Pos 2 (Root 5th)', frets: [1, 3, 5, 5, 3, 1], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Pos 3 (Root 4th)', frets: [3, 5, 6, 5, 3, 3], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Pos 4 (Root 3rd)', frets: [5, 6, 8, 8, 6, 5], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Pos 5 (Root 1st)', frets: [6, 8, 10, 10, 8, 6], strings: [0, 1, 2, 3, 4, 5] },
-    ]
-  },
-  'Pentatonic Major': {
-    positions: [
-      { name: 'Box 1', frets: [0, 2, 2, 0, 0, 0], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Box 2', frets: [2, 4, 4, 2, 2, 2], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Box 3', frets: [4, 5, 5, 4, 4, 4], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Box 4', frets: [5, 7, 7, 5, 5, 5], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Box 5', frets: [7, 9, 9, 7, 7, 7], strings: [0, 1, 2, 3, 4, 5] },
-    ]
-  },
-  'Pentatonic Minor': {
-    positions: [
-      { name: 'Box 1', frets: [0, 0, 3, 3, 0, 0], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Box 2', frets: [3, 3, 5, 5, 3, 3], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Box 3', frets: [5, 5, 6, 6, 5, 5], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Box 4', frets: [6, 6, 8, 8, 6, 6], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Box 5', frets: [8, 8, 10, 10, 8, 8], strings: [0, 1, 2, 3, 4, 5] },
-    ]
-  },
-  'Blues': {
-    positions: [
-      { name: 'Box 1', frets: [0, 0, 3, 3, 1, 0], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Box 2', frets: [3, 3, 5, 5, 3, 3], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Box 3', frets: [5, 5, 6, 6, 5, 5], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Box 4', frets: [6, 6, 8, 8, 6, 6], strings: [0, 1, 2, 3, 4, 5] },
-      { name: 'Box 5', frets: [8, 8, 10, 10, 8, 8], strings: [0, 1, 2, 3, 4, 5] },
-    ]
-  }
-};
+// ═══════════════════════════════════════════
+// SCALE ENGINE — starting positions & ascending runs
+// ═══════════════════════════════════════════
+var NECK_FRETS = 24;                            // playable neck used for fingering (not the on-screen fret count)
+var ROOT_POSITION_STRINGS = [0, 1, 2, 3, 4];    // string 0 = low E ... 4 = B (6th..2nd string)
+var ROOT_POSITION_NAMES = ['Root on 6th', 'Root on 5th', 'Root on 4th', 'Root on 3rd', 'Root on 2nd'];
 
-// Default shapes for scales not explicitly defined
-function getScaleShapePositions(scaleType, rootNote, fretCount) {
-  var shapes = SCALE_SHAPES[scaleType];
-  if (!shapes) {
-    // Generate generic position-based shape from intervals
-    return generateGenericShape(scaleType, rootNote, fretCount);
-  }
-  return shapes.positions.map(function(pos) {
-    var notes = [];
-    for (var i = 0; i < pos.frets.length; i++) {
-      var stringIdx = pos.strings[i];
-      var fret = pos.frets[i];
-      var midi = STRINGS[stringIdx] + fret;
-      notes.push({ string: stringIdx, fret: fret, midi: midi, note: midi % 12 });
-    }
-    return { name: pos.name, notes: notes };
-  });
+// Lowest fret (>=0) where rootPc appears on a given string
+function rootFretOnString(stringIdx, rootPc) {
+  return ((rootPc - STRINGS[stringIdx]) % 12 + 12) % 12;
 }
 
-function generateGenericShape(scaleType, rootNote, fretCount) {
-  // For scales without defined shapes, create a simple position pattern
-  var intervals = SCALES[scaleType];
-  if (!intervals) return [];
-  var shapes = [];
-  // Create 3 overlapping positions across the neck
-  for (var baseFret = 0; baseFret <= Math.min(fretCount - 3, 8); baseFret += 4) {
-    var notes = [];
-    for (var s = 5; s >= 0; s--) {
-      // Find the first scale note on this string at or after baseFret
-      for (var f = baseFret; f <= Math.min(baseFret + 4, fretCount); f++) {
-        var note = (STRINGS[s] + f) % 12;
-        var isScale = intervals.indexOf((note - rootNote + 12) % 12) !== -1;
-        if (isScale) {
-          notes.push({ string: s, fret: f, midi: STRINGS[s] + f, note: note });
-          break;
+// The 5 starting positions (root on each of strings 6..2) for the current key
+function getStartPositions(rootPc) {
+  var out = [];
+  for (var i = 0; i < ROOT_POSITION_STRINGS.length; i++) {
+    var s = ROOT_POSITION_STRINGS[i];
+    var f = rootFretOnString(s, rootPc);
+    out.push({ name: ROOT_POSITION_NAMES[i], string: s, fret: f, midi: STRINGS[s] + f });
+  }
+  return out;
+}
+
+function getModeIntervals(parentName, modeIdx) {
+  var parent = SCALES[parentName] || SCALES['Major (Ionian)'];
+  var out = [];
+  for (var i = 0; i < parent.length; i++) {
+    var ii = (i + modeIdx) % parent.length;
+    var v = parent[ii] - parent[modeIdx];
+    if (v < 0) v += 12;
+    out.push(v);
+  }
+  return out;
+}
+function getActiveRoot() {
+  return state.tab === 'modes' ? state.modeKey : state.scaleKey;
+}
+function getActiveIntervals() {
+  if (state.tab === 'modes') return getModeIntervals(state.modeParent, state.modeIndex);
+  return SCALES[state.scaleType] || SCALES['Major (Ionian)'];
+}
+
+// Build an ascending scale run of `octaves` octaves starting from a position.
+// Fingering keeps the hand inside a 4-fret window and moves to thinner strings,
+// shifting position when the run leaves the window (hand position changes mid run).
+function buildScaleRun(startPos, intervals, octaves) {
+  var startMidi = startPos.midi;
+  var tones = [];
+  for (var o = 0; o < octaves; o++) {
+    for (var i = 0; i < intervals.length; i++) tones.push(startMidi + o * 12 + intervals[i]);
+  }
+  tones.push(startMidi + octaves * 12);
+
+  var W = 4;                 // hand window span (frets)
+  var w = startPos.fret;     // window low fret
+  var str = startPos.string;
+  var notes = [];
+  for (var t = 0; t < tones.length; t++) {
+    var midi = tones[t];
+    var placed = false;
+    // 1) stay inside the hand window, preferring the current string then higher-pitched (thinner) strings
+    for (var s = str; s <= 5; s++) {
+      var f = midi - STRINGS[s];
+      if (f >= 0 && f <= NECK_FRETS && f >= w - 1 && f <= w + W) {
+        notes.push({ string: s, fret: f, midi: midi, note: ((midi % 12) + 12) % 12 });
+        str = s; placed = true; break;
+      }
+    }
+    // 2) outside the window: nearest playable on current/higher strings, shift the window
+    if (!placed) {
+      for (var s2 = str; s2 <= 5; s2++) {
+        var f2 = midi - STRINGS[s2];
+        if (f2 >= 0 && f2 <= NECK_FRETS) {
+          notes.push({ string: s2, fret: f2, midi: midi, note: ((midi % 12) + 12) % 12 });
+          str = s2; w = f2; placed = true; break;
         }
       }
     }
-    if (notes.length >= 3) {
-      shapes.push({ name: 'Position ' + (baseFret + 1) + ' (fret ' + baseFret + ')', notes: notes });
-    }
-  }
-  return shapes;
-}
-
-var currentShapeIndex = 0;
-var currentShapes = [];
-
-function playScaleShape() {
-  if (!currentShapes || currentShapes.length === 0) {
-    // Generate shapes for current scale/mode
-    if (state.tab === 'modes') {
-      var parentIntervals = SCALES[state.modeParent];
-      var modeIntervals = [];
-      for (var i = 0; i < parentIntervals.length; i++) {
-        var ii = (i + state.modeIndex) % parentIntervals.length;
-        var val = parentIntervals[ii] - parentIntervals[state.modeIndex];
-        if (val < 0) val += 12;
-        modeIntervals.push(val);
+    // 3) last resort: any string that can reach it
+    if (!placed) {
+      for (var s3 = 0; s3 <= 5; s3++) {
+        var f3 = midi - STRINGS[s3];
+        if (f3 >= 0 && f3 <= NECK_FRETS) {
+          notes.push({ string: s3, fret: f3, midi: midi, note: ((midi % 12) + 12) % 12 });
+          str = s3; placed = true; break;
+        }
       }
-      currentShapes = getScaleShapePositions(state.modeParent, state.modeKey, state.fretCount);
-    } else {
-      currentShapes = getScaleShapePositions(state.scaleType, state.scaleKey, state.fretCount);
     }
-    currentShapeIndex = 0;
   }
-  if (currentShapes.length === 0) return;
-
-  var shape = currentShapes[currentShapeIndex];
-  if (!shape) return;
-
-  // Play the shape notes from low to high
-  var sortedNotes = shape.notes.slice().sort(function(a, b) { return b.string - a.string; });
-  for (var i = 0; i < sortedNotes.length; i++) {
-    (function(n, idx) {
-      setTimeout(function() {
-        playNote(midiToFreq(n.midi), 1.5, idx === 0);
-        // Highlight the dot on fretboard
-        highlightFretDot(n.string, n.fret);
-      }, i * 80);
-    })(sortedNotes[i], i);
-  }
-
-  // Update UI
-  var shapeLabel = document.getElementById('shapeLabel');
-  if (shapeLabel) {
-    shapeLabel.textContent = shape.name + ' (' + (currentShapeIndex + 1) + '/' + currentShapes.length + ')';
-  }
-
-  // Next shape
-  currentShapeIndex = (currentShapeIndex + 1) % currentShapes.length;
+  return notes;
 }
 
-function highlightFretDot(stringIdx, fret) {
-  // Remove previous highlights
+var currentStartPositions = [];
+var currentPositionIndex = 0;
+var repeatScale = false;
+var scaleRunTimers = [];
+
+function refreshStartPositions() {
+  currentStartPositions = getStartPositions(getActiveRoot());
+  if (currentPositionIndex >= currentStartPositions.length) currentPositionIndex = 0;
+  updateShapeLabels();
+}
+function updateShapeLabels() {
+  var p = currentStartPositions[currentPositionIndex];
+  if (!p) return;
+  var txt = p.name + ' (' + (currentPositionIndex + 1) + '/' + currentStartPositions.length + ')';
+  var a = document.getElementById('shapeLabel');
+  var b = document.getElementById('shapeLabel2');
+  if (a) a.textContent = txt;
+  if (b) b.textContent = txt;
+}
+
+function stopScaleRun() {
+  for (var i = 0; i < scaleRunTimers.length; i++) clearTimeout(scaleRunTimers[i]);
+  scaleRunTimers = [];
   document.querySelectorAll('.note-dot.playing').forEach(function(el) {
     el.classList.remove('playing');
     el.style.boxShadow = '';
   });
-  // Find and highlight
-  var dots = document.querySelectorAll('.note-dot');
-  dots.forEach(function(dot) {
-    var onclick = dot.getAttribute('onclick') || '';
-    var match = onclick.match(/playNote\((\d+\.?\d*)/);
-    if (match) {
-      var freq = parseFloat(match[1]);
-      var expectedFreq = midiToFreq(STRINGS[stringIdx] + fret);
-      if (Math.abs(freq - expectedFreq) < 1) {
-        dot.classList.add('playing');
-        dot.style.boxShadow = '0 0 15px var(--amber), 0 0 30px rgba(251,191,36,0.4)';
-      }
-    }
-  });
+}
+
+function playScaleShape() {
+  stopScaleRun();
+  refreshStartPositions();
+  var pos = currentStartPositions[currentPositionIndex];
+  if (!pos) return;
+  var run = buildScaleRun(pos, getActiveIntervals(), state.playOctaves || 1);
+  if (!run.length) return;
+
+  var NOTE_MS = 260;
+  for (var i = 0; i < run.length; i++) {
+    (function(n, idx) {
+      scaleRunTimers.push(setTimeout(function() {
+        playNote(midiToFreq(n.midi), 0.5, idx === 0);
+        highlightFretDot(n.string, n.fret);
+      }, idx * NOTE_MS));
+    })(run[i], i);
+  }
+  if (repeatScale) {
+    scaleRunTimers.push(setTimeout(function() { if (repeatScale) playScaleShape(); }, run.length * NOTE_MS + 450));
+  }
+}
+
+function toggleRepeatScale() {
+  repeatScale = !repeatScale;
+  var btn = document.getElementById('repeatBtn');
+  if (btn) btn.classList.toggle('active', repeatScale);
+  if (repeatScale) playScaleShape();
+  else stopScaleRun();
 }
 
 function prevShape() {
-  if (currentShapes && currentShapes.length > 0) {
-    currentShapeIndex = (currentShapeIndex - 1 + currentShapes.length) % currentShapes.length;
-    playScaleShape();
-  }
+  if (!currentStartPositions.length) refreshStartPositions();
+  currentPositionIndex = (currentPositionIndex - 1 + currentStartPositions.length) % currentStartPositions.length;
+  updateShapeLabels();
+  playScaleShape();
 }
 function nextShape() {
-  if (currentShapes && currentShapes.length > 0) {
-    currentShapeIndex = (currentShapeIndex + 1) % currentShapes.length;
-    playScaleShape();
+  if (!currentStartPositions.length) refreshStartPositions();
+  currentPositionIndex = (currentPositionIndex + 1) % currentStartPositions.length;
+  updateShapeLabels();
+  playScaleShape();
+}
+
+function setPlayOctaves(n) {
+  state.playOctaves = n;
+  for (var i = 1; i <= 3; i++) {
+    var b = document.getElementById('playOct' + i);
+    if (b) b.classList.toggle('active', i === n);
   }
+  updateURL();
+}
+
+// Highlight the fret dot at (stringIdx, fret) — dots carry data-s / data-f
+function highlightFretDot(stringIdx, fret) {
+  document.querySelectorAll('.note-dot.playing').forEach(function(el) {
+    el.classList.remove('playing');
+    el.style.boxShadow = '';
+  });
+  var sel = '.note-dot[data-s="' + stringIdx + '"][data-f="' + fret + '"]';
+  document.querySelectorAll(sel).forEach(function(dot) {
+    dot.classList.add('playing');
+    dot.style.boxShadow = '0 0 15px var(--amber), 0 0 30px rgba(251,191,36,0.4)';
+  });
 }
 
 // ═══════════════════════════════════════════
@@ -731,6 +767,7 @@ var state = {
   modeIndex: 0,
   octaves: [2,3,4,5],
   octaveOnly: false,
+  playOctaves: 1,
 };
 
 // ═══════════════════════════════════════════
@@ -852,7 +889,7 @@ function renderScales(){
       if(f===0)cellStyle+='border-left:4px solid rgba(230,210,180,0.85);';
       html+='<td style="'+cellStyle+'">';
       if(cls){
-        html+='<div class="note-dot '+cls+'" style="left:50%;top:50%" onclick="playNote('+midiToFreq(midi)+',1.2,false)">';
+        html+='<div class="note-dot '+cls+'" data-s="'+s+'" data-f="'+f+'" style="left:50%;top:50%" onclick="playNote('+midiToFreq(midi)+',1.2,false)">';
         html+='<span class="nd">'+label+'</span>';
         html+='</div>';
       }else if(isScale&&state.octaveOnly&&!octOk){
@@ -879,6 +916,7 @@ function renderScales(){
   infoHtml+='<div class="info-cell"><div class="ilabel">Notes count</div><div class="ivalue">'+scaleNotes.length+'</div></div>';
   document.getElementById('scaleInfo').innerHTML=infoHtml;
 
+  refreshStartPositions();
   updateURL();
 }
 
@@ -1148,9 +1186,9 @@ function selectMode(idx){
       if(f===0)cellStyle+='border-left:4px solid rgba(230,210,180,0.85);';
       html+='<td style="'+cellStyle+'">';
       if(isRoot){
-        html+='<div class="note-dot root" style="left:50%;top:50%" onclick="playNote('+midiToFreq(STRINGS[s]+f)+',1.2,true)"><span class="nd">'+noteName(note,false)+'</span></div>';
+        html+='<div class="note-dot root" data-s="'+s+'" data-f="'+f+'" style="left:50%;top:50%" onclick="playNote('+midiToFreq(STRINGS[s]+f)+',1.2,true)"><span class="nd">'+noteName(note,false)+'</span></div>';
       }else if(isMode){
-        html+='<div class="note-dot scale" style="left:50%;top:50%" onclick="playNote('+midiToFreq(STRINGS[s]+f)+',1.2,false)"><span class="nd">'+noteName(note,false)+'</span></div>';
+        html+='<div class="note-dot scale" data-s="'+s+'" data-f="'+f+'" style="left:50%;top:50%" onclick="playNote('+midiToFreq(STRINGS[s]+f)+',1.2,false)"><span class="nd">'+noteName(note,false)+'</span></div>';
       }
       html+='</td>';
     }
@@ -1159,13 +1197,13 @@ function selectMode(idx){
   html+='</tbody></table>';
   document.getElementById('modeFretboard').innerHTML=html;
 
+  refreshStartPositions();
   updateURL();
 }
 
 function playMode(){
-  // Play using proper scale shapes
-  currentShapes = getScaleShapePositions(state.modeParent, state.modeKey, state.fretCount);
-  currentShapeIndex = 0;
+  // Play the mode as a proper ascending run from the first position
+  currentPositionIndex = 0;
   playScaleShape();
 }
 
@@ -1197,6 +1235,7 @@ function updateURL(){
     params.set('f',state.fretCount);
     params.set('oct',state.octaves.join(','));
     params.set('oo',state.octaveOnly?1:0);
+    params.set('po',state.playOctaves);
   }else if(state.tab==='chords'){
     params.set('r',state.chordRoot);
     params.set('t',state.chordType);
@@ -1227,12 +1266,163 @@ function loadURL(){
     }
   }
   if(params.has('oo'))state.octaveOnly=params.get('oo')==='1';
+  if(params.has('po')){var _po=parseInt(params.get('po'));if(_po>=1&&_po<=3)state.playOctaves=_po;}
   if(params.has('r'))state.chordRoot=parseInt(params.get('r'))||0;
   if(params.has('t')&&CHORD_TYPES[params.get('t')])state.chordType=params.get('t');
   if(params.has('i'))state.chordInv=parseInt(params.get('i'))||0;
   if(params.has('mk'))state.modeKey=parseInt(params.get('mk'))||0;
   if(params.has('mp')&&SCALES[params.get('mp')])state.modeParent=params.get('mp');
   if(params.has('mi'))state.modeIndex=parseInt(params.get('mi'))||0;
+}
+
+// ═══════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════
+var THEMES = [
+  {name:'Deep Ocean',accent:'#22d3ee',bg:'#0a0e1a'},
+  {name:'Evergreen', accent:'#34d399',bg:'#07160e'},
+  {name:'Coral',     accent:'#fb7185',bg:'#1a0a10'},
+  {name:'Orchid',    accent:'#c4b5fd',bg:'#140a1e'},
+  {name:'Ember',     accent:'#fbbf24',bg:'#1c1104'},
+  {name:'Nebula',    accent:'#a78bfa',bg:'#100820'},
+  {name:'Glacier',   accent:'#67e8f9',bg:'#061018'},
+  {name:'Dune',      accent:'#d4a574',bg:'#170f0a'},
+  {name:'Sterling',  accent:'#9ca3af',bg:'#0f0f12'},
+  {name:'Sky',       accent:'#7dd3fc',bg:'#061020'},
+  {name:'Aurora',    accent:'#a3e635',bg:'#0a1806'},
+  {name:'Violet',    accent:'#c084fc',bg:'#150a20'}
+];
+var currentThemeIndex = 0;
+function hexMix(a, b, t) {
+  function h2r(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
+  var A=h2r(a), B=h2r(b), o=[];
+  for (var i=0;i<3;i++) o.push(Math.round(A[i]+(B[i]-A[i])*t));
+  return '#'+o.map(function(v){var s=v.toString(16);return s.length<2?'0'+s:s;}).join('');
+}
+function applyTheme(idx) {
+  var t = THEMES[idx]; if (!t) return;
+  var r = document.documentElement.style;
+  r.setProperty('--cyan', t.accent);
+  r.setProperty('--bg', t.bg);
+  r.setProperty('--bg-card', hexMix(t.bg, '#ffffff', 0.06));
+  r.setProperty('--bg-card2', hexMix(t.bg, '#ffffff', 0.03));
+  r.setProperty('--bg3', hexMix(t.bg, '#ffffff', 0.11));
+  r.setProperty('--border', hexMix(t.bg, t.accent, 0.22));
+  r.setProperty('--border-light', hexMix(t.bg, t.accent, 0.34));
+  var btn = document.getElementById('themeCycleBtn');
+  if (btn) {
+    var n = btn.querySelector('.theme-name');
+    var d = btn.querySelector('.theme-dot-preview');
+    if (n) n.textContent = t.name;
+    if (d) { d.style.background = t.accent; d.style.boxShadow = '0 0 6px ' + t.accent; }
+  }
+  try { localStorage.setItem('scalien-theme', idx); } catch(e) {}
+}
+function cycleTheme() {
+  currentThemeIndex = (currentThemeIndex + 1) % THEMES.length;
+  applyTheme(currentThemeIndex);
+}
+function restoreTheme() {
+  try {
+    var s = localStorage.getItem('scalien-theme');
+    if (s !== null) { var i = parseInt(s); if (!isNaN(i) && i >= 0 && i < THEMES.length) currentThemeIndex = i; }
+  } catch(e) {}
+  applyTheme(currentThemeIndex);
+}
+
+// ═══════════════════════════════════════════
+// REPORT BUGS
+// ═══════════════════════════════════════════
+function reportBug() {
+  var title = '[Bug] ';
+  var body = '**What happened:**\n\n**What you expected:**\n\n**Steps to reproduce:**\n1. \n\n**Scale / key / settings (from the URL):**\n' + location.href + '\n\n**Browser / device:**\n';
+  var url = 'https://github.com/Articulate-English/scalien/issues/new?title=' + encodeURIComponent(title) + '&body=' + encodeURIComponent(body);
+  window.open(url, '_blank', 'noopener');
+}
+
+// ═══════════════════════════════════════════
+// LOGO THEREMIN  (double-click logo = on, click = off)
+// ═══════════════════════════════════════════
+var thereminActive = false, thereminOsc = null, thereminGain = null, thereminFilter = null, thereminRaf = 0;
+
+function onLogoClick() {
+  if (thereminActive) stopTheremin();
+}
+function startTheremin() {
+  if (thereminActive) return;
+  var ctx = getAudio();
+  if (!ctx) return;
+  if (ctx.state === 'suspended') { ctx.resume().then(startTheremin).catch(function(){}); return; }
+  var now = ctx.currentTime;
+  thereminOsc = ctx.createOscillator(); thereminOsc.type = 'sine'; thereminOsc.frequency.setValueAtTime(440, now);
+  thereminFilter = ctx.createBiquadFilter(); thereminFilter.type = 'lowpass'; thereminFilter.frequency.setValueAtTime(2500, now); thereminFilter.Q.setValueAtTime(2, now);
+  thereminGain = ctx.createGain(); thereminGain.gain.setValueAtTime(0, now);
+  thereminOsc.connect(thereminFilter); thereminFilter.connect(thereminGain); thereminGain.connect(ctx.destination);
+  thereminOsc.start(now);
+  thereminGain.gain.linearRampToValueAtTime(0.28, now + 0.1);
+  thereminActive = true;
+  var wrap = document.getElementById('logoWrap');
+  if (wrap) wrap.classList.add('theremin-active');
+  document.addEventListener('pointermove', onThereminMove);
+  updateTheremin(0.5, 0.5);
+  updateThereminGlow();
+}
+function onThereminMove(e) {
+  if (!thereminActive) return;
+  var x = Math.max(0, Math.min(1, e.clientX / window.innerWidth));
+  var y = Math.max(0, Math.min(1, e.clientY / window.innerHeight));
+  updateTheremin(x, y);
+}
+function updateTheremin(x, y) {
+  if (!audioCtx || !thereminOsc || !thereminGain || !thereminFilter) return;
+  var now = audioCtx.currentTime;
+  var minF = 80, maxF = 1400;
+  var freq = minF * Math.pow(maxF / minF, 1 - x);            // X = pitch
+  var vol = Math.max(0.001, Math.pow(1 - y, 1.5) * 0.5);      // Y = volume (top = loud)
+  var filt = 400 + Math.pow(1 - y, 0.7) * 6000;
+  thereminOsc.frequency.setTargetAtTime(freq, now, 0.03);
+  thereminGain.gain.setTargetAtTime(vol, now, 0.03);
+  thereminFilter.frequency.setTargetAtTime(filt, now, 0.05);
+}
+function updateThereminGlow() {
+  if (!thereminActive || !thereminOsc) return;
+  var wrap = document.getElementById('logoWrap');
+  var svg = wrap ? wrap.querySelector('.space-invader-logo') : null;
+  if (svg) {
+    var f = thereminOsc.frequency.value;
+    var t = Math.max(0, Math.min(1, (f - 80) / (1400 - 80)));
+    var r = Math.round(34 + (251 - 34) * t), g = Math.round(211 + (113 - 211) * t), b = Math.round(238 + (133 - 238) * t);
+    var col = 'rgb(' + r + ',' + g + ',' + b + ')';
+    var vol = thereminGain ? thereminGain.gain.value : 0.3;
+    var glow = 10 + vol * 70;
+    svg.style.filter = 'drop-shadow(0 0 ' + glow + 'px ' + col + ') drop-shadow(0 0 ' + (glow * 1.8) + 'px ' + col + ')';
+  }
+  thereminRaf = requestAnimationFrame(updateThereminGlow);
+}
+function stopTheremin() {
+  if (!thereminActive) return;
+  thereminActive = false;
+  if (thereminRaf) cancelAnimationFrame(thereminRaf);
+  var wrap = document.getElementById('logoWrap');
+  if (wrap) {
+    wrap.classList.remove('theremin-active');
+    var svg = wrap.querySelector('.space-invader-logo');
+    if (svg) svg.style.filter = '';
+  }
+  document.removeEventListener('pointermove', onThereminMove);
+  if (audioCtx && thereminGain) {
+    var now = audioCtx.currentTime;
+    thereminGain.gain.cancelScheduledValues(now);
+    thereminGain.gain.setValueAtTime(thereminGain.gain.value, now);
+    thereminGain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+  }
+  setTimeout(function() {
+    try { if (thereminOsc) thereminOsc.stop(); } catch(e) {}
+    try { if (thereminOsc) thereminOsc.disconnect(); } catch(e) {}
+    try { if (thereminFilter) thereminFilter.disconnect(); } catch(e) {}
+    try { if (thereminGain) thereminGain.disconnect(); } catch(e) {}
+    thereminOsc = thereminFilter = thereminGain = null;
+  }, 160);
 }
 
 // ═══════════════════════════════════════════
@@ -1306,6 +1496,10 @@ function init(){
   if(tabBtns[tabMap[state.tab]])tabBtns[tabMap[state.tab]].classList.add('active');
   var activePanel=document.getElementById('panel-'+state.tab);
   if(activePanel)activePanel.classList.add('active');
+
+  // Play octaves buttons + theme
+  for(var po=1;po<=3;po++){var pb=document.getElementById('playOct'+po);if(pb)pb.classList.toggle('active',po===state.playOctaves);}
+  restoreTheme();
 
   // Initial renders
   renderScales();
