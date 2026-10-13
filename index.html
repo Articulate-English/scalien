@@ -162,6 +162,12 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 .abtn.repeat.active{background:var(--amber);color:#000;box-shadow:0 0 0.875rem rgba(251,191,36,.4)}
 .note-dot.playing{outline:2px solid var(--amber);outline-offset:1px}
 
+/* Donate bar */
+.donate-bar{display:flex;align-items:center;justify-content:center;gap:0.625rem;flex-wrap:wrap;padding:0.625rem 0 0.25rem;border-top:0.0625rem solid var(--border);margin-top:auto}
+.donate-bar span{font-family:'Orbitron',sans-serif;font-size:.55rem;font-weight:700;letter-spacing:0.03125rem;text-transform:uppercase;color:var(--text-dim)}
+.donate-btn{display:inline-flex;align-items:center;background:#0070ba;color:#fff;padding:0.375rem 0.875rem;border-radius:0.375rem;text-decoration:none;font-family:'Orbitron',sans-serif;font-size:.55rem;font-weight:700;letter-spacing:0.03125rem;transition:all .15s;white-space:nowrap}
+.donate-btn:hover{background:#005ea6;box-shadow:0 0 0.75rem rgba(0,112,186,.55)}
+
 /* Responsive */
 @media(max-width:768px){
   .header h1{font-size:1.1rem}
@@ -394,6 +400,12 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
         <button class="abtn arpeggio" onclick="arpeggioMode()">♪ Arpeggio</button>
       </div>
     </div>
+  </div>
+
+  <!-- ═══ DONATE ═══ -->
+  <div class="donate-bar">
+    <span>Support this project</span>
+    <a class="donate-btn" href="https://paypal.me/williamgraythomason" target="_blank" rel="noopener">Donate via PayPal</a>
   </div>
 
 </div>
