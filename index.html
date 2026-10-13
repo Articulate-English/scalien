@@ -155,7 +155,7 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 .space-invader-logo{transition:filter .2s,transform .2s}
 .logo-wrap.theremin-active .space-invader-logo{animation:thereminPulse .6s ease-in-out infinite alternate;cursor:crosshair}
 @keyframes thereminPulse{0%{transform:scale(1)}100%{transform:scale(1.06)}}
-.theremin-badge{display:none;margin:0.5rem auto 0;width:fit-content;max-width:92%;padding:0.375rem 0.875rem;background:rgba(0,0,0,.4);border:0.0625rem solid var(--green);border-radius:0.5rem;font-family:'Orbitron',sans-serif;font-size:.5rem;font-weight:700;letter-spacing:0.03125rem;color:var(--green);text-shadow:0 0 0.5rem var(--green);white-space:normal;text-align:center}
+.theremin-badge{display:none;margin:0 auto 0.5rem;width:fit-content;max-width:92%;padding:0.375rem 0.875rem;background:rgba(0,0,0,.4);border:0.0625rem solid var(--green);border-radius:0.5rem;font-family:'Orbitron',sans-serif;font-size:.5rem;font-weight:700;letter-spacing:0.03125rem;color:var(--green);text-shadow:0 0 0.5rem var(--green);white-space:normal;text-align:center}
 .theremin-badge.on{display:block}
 
 /* Repeat Scale toggle */
@@ -194,6 +194,7 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
     <div class="header-tools">
       <button class="tool-btn" id="themeCycleBtn" onclick="cycleTheme()" title="Cycle theme colour"><span class="theme-dot-preview"></span><span class="theme-name">Deep Ocean</span></button>
     </div>
+    <div class="theremin-badge" id="thereminBadge">Theremin ON — move your pointer · click to stop</div>
     <div class="logo-wrap" id="logoWrap" ondblclick="startTheremin()" onclick="onLogoClick()" title="Double-click the logo for a theremin · click to stop">
       <svg class="space-invader-logo" viewBox="0 0 100 100" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -259,7 +260,6 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
     </div>
     <h1>SCALIEN</h1>
     <div class="subtitle">Guitar Scale &amp; Chord Explorer — Practice Smarter</div>
-    <div class="theremin-badge" id="thereminBadge">Theremin ON — move your pointer · click to stop</div>
   </div>
 
   <!-- TABS -->
