@@ -81,7 +81,6 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 .note-dot.root{background:var(--cyan);color:#000;box-shadow:0 0 10px var(--cyan),0 2px 6px rgba(0,0,0,.4)}
 .note-dot.scale{background:var(--violet);color:#fff;box-shadow:0 0 6px rgba(167,139,250,.4)}
 .note-dot.chord{background:var(--green);color:#000;box-shadow:0 0 6px rgba(52,211,153,.4)}
-.note-dot.dimmed{opacity:.15}
 
 /* Mode/Scale info */
 .info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem}
@@ -892,11 +891,6 @@ function renderScales(){
       if(cls){
         html+='<div class="note-dot '+cls+'" data-s="'+s+'" data-f="'+f+'" style="left:50%;top:50%" onclick="playNote('+midiToFreq(midi)+',1.2,false)">';
         html+='<span class="nd">'+label+'</span>';
-        html+='</div>';
-      }else if(isScale&&state.octaveOnly&&!octOk){
-        // Show dimmed ghost dot for out-of-octave notes
-        html+='<div class="note-dot dimmed" style="left:50%;top:50%;width:22px;height:22px">';
-        html+='<span class="nd" style="font-size:8px">'+noteName(note,false)+'</span>';
         html+='</div>';
       }
       html+='</td>';
