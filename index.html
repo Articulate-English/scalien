@@ -34,9 +34,12 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 
 /* Tabs */
 .tabs{display:flex;gap:0.25rem;background:var(--bg-card);border:0.0625rem solid var(--border);border-radius:0.625rem;padding:0.25rem}
-.tab{flex:1;padding:0.625rem 0.25rem;border-radius:0.4375rem;border:none;background:transparent;color:var(--text-muted);font-family:'Orbitron',sans-serif;font-size:.65rem;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:0.03125rem;text-align:center}
-.tab:hover{color:var(--text)}
-.tab.active{background:rgba(34,211,238,.12);color:var(--cyan);box-shadow:0 0 0.5rem rgba(34,211,238,.15)}
+.tab{flex:1;padding:0.625rem 0.25rem;border-radius:0.4375rem;border:none;background:transparent;color:var(--tab-c,var(--cyan));opacity:.55;text-shadow:0 0 0.375rem var(--tab-c,var(--cyan));font-family:'Orbitron',sans-serif;font-size:.65rem;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:0.03125rem;text-align:center}
+.tab-scales{--tab-c:var(--cyan)}
+.tab-chords{--tab-c:var(--green)}
+.tab-modes{--tab-c:var(--violet)}
+.tab:hover{color:var(--tab-c);opacity:1;text-shadow:0 0 0.5rem var(--tab-c)}
+.tab.active{background:rgba(255,255,255,.05);color:var(--tab-c);opacity:1;text-shadow:0 0 0.5rem var(--tab-c),0 0 1.25rem var(--tab-c);box-shadow:0 0 0.5rem rgba(0,0,0,.25)}
 
 /* Panels */
 .panel{display:none}
@@ -264,9 +267,9 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 
   <!-- TABS -->
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('scales',this)">📊 SCALES</button>
-    <button class="tab" onclick="switchTab('chords',this)">🎵 CHORDS</button>
-    <button class="tab" onclick="switchTab('modes',this)">🎹 MODES</button>
+    <button class="tab tab-scales active" onclick="switchTab('scales',this)">SCALES</button>
+    <button class="tab tab-chords" onclick="switchTab('chords',this)">CHORDS</button>
+    <button class="tab tab-modes" onclick="switchTab('modes',this)">MODES</button>
   </div>
 
   <!-- ═══ SCALES PANEL ═══ -->
@@ -282,7 +285,7 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
     <div class="dash-panel" style="padding:0.625rem 0.875rem">
       <div style="display:flex;align-items:center;gap:0.625rem;flex-wrap:wrap">
         <div id="metroIndicator" style="width:0.75rem;height:0.75rem;border-radius:50%;background:var(--border);transition:all .1s;flex-shrink:0"></div>
-        <button class="abtn" id="metroBtn" onclick="toggleMetronome()" style="height:2rem;padding:0 0.75rem;font-size:.6rem">⏯ Metronome</button>
+        <button class="abtn" id="metroBtn" onclick="toggleMetronome()" style="height:2rem;padding:0 0.75rem;font-size:.6rem">Metronome</button>
         <input type="range" min="40" max="200" value="80" style="width:6.25rem;accent-color:var(--cyan)" oninput="setMetroBpm(this.value)">
         <span id="metroBpmLabel" style="font-family:'Orbitron',sans-serif;font-size:.65rem;color:var(--text-dim);min-width:3.75rem">80 BPM</span>
         <span style="display:inline-flex;align-items:center;gap:0.5rem;flex-wrap:nowrap">
@@ -362,7 +365,7 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
       </div>
       <div class="actions-row">
         <button class="abtn play" onclick="playChord()">▶ Play</button>
-        <button class="abtn strum" onclick="strumChord()">🎸 Strum</button>
+        <button class="abtn strum" onclick="strumChord()">Strum</button>
         <button class="abtn arpeggio" onclick="arpeggioChord()">♪ Arp</button>
       </div>
       <div class="other-names">
@@ -486,12 +489,12 @@ function toggleMetronome() {
   metro.running = !metro.running;
   var btn = document.getElementById('metroBtn');
   if (metro.running) {
-    if (btn) { btn.classList.add('active'); btn.textContent = '⏹ Stop'; }
+    if (btn) { btn.classList.add('active'); btn.textContent = 'Stop'; }
     metro.nextTick = getAudio().currentTime + 0.05;
     metro.beat = 0;
     metroTick();
   } else {
-    if (btn) { btn.classList.remove('active'); btn.textContent = '⏯ Metronome'; }
+    if (btn) { btn.classList.remove('active'); btn.textContent = 'Metronome'; }
     if (metro.timer) clearTimeout(metro.timer);
   }
 }
