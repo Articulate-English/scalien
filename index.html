@@ -151,7 +151,10 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 .header-tools{display:flex;justify-content:flex-end;gap:0.375rem;margin-bottom:0.375rem}
 .tool-btn{height:1.875rem;padding:0 0.625rem;border-radius:0.5rem;border:0.0625rem solid var(--border);background:var(--bg3);color:var(--text-muted);font-family:'Orbitron',sans-serif;font-size:.55rem;font-weight:700;letter-spacing:0.03125rem;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:0.375rem;white-space:nowrap}
 .tool-btn:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 0.625rem rgba(34,211,238,.15)}
-.theme-dot-preview{width:0.625rem;height:0.625rem;border-radius:50%;background:var(--cyan);box-shadow:0 0 0.375rem var(--cyan);display:inline-block}
+.theme-cycle-btn{width:1.875rem;height:1.875rem;padding:0;border-radius:50%;background:rgba(255,255,255,.04);border:0.0625rem solid var(--border);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;-webkit-backdrop-filter:blur(0.5rem);backdrop-filter:blur(0.5rem)}
+.theme-cycle-btn:hover{background:rgba(255,255,255,.08);transform:scale(1.08);border-color:var(--cyan)}
+.theme-cycle-btn svg{width:1.0625rem;height:1.0625rem;display:block}
+.theme-icon-fill{fill:var(--cyan);transition:fill .3s ease}
 
 /* Logo / theremin */
 .logo-wrap{cursor:pointer;user-select:none;-webkit-user-select:none;display:inline-block;position:relative}
@@ -195,7 +198,9 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
   <!-- HEADER -->
   <div class="header">
     <div class="header-tools">
-      <button class="tool-btn" id="themeCycleBtn" onclick="cycleTheme()" title="Cycle theme colour"><span class="theme-dot-preview"></span><span class="theme-name">Deep Ocean</span></button>
+      <button class="theme-cycle-btn" id="themeCycleBtn" onclick="cycleTheme()" title="Cycle theme colour" aria-label="Cycle theme colour">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path class="theme-icon-fill" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c1.8 0 3.5-0.5 5-1.4-1.8-0.9-3-2.8-3-4.8 0-2.8 2.2-5 5-5 2 0 3.6 1.2 4.4 3C23.3 6.9 18.3 2 12 2z"/></svg>
+      </button>
     </div>
     <div class="theremin-badge" id="thereminBadge">Theremin ON — move your pointer · click to stop</div>
     <div class="logo-wrap" id="logoWrap" ondblclick="startTheremin()" onclick="onLogoClick()" title="Double-click the logo for a theremin · click to stop">
@@ -1325,10 +1330,9 @@ function applyTheme(idx) {
   r.setProperty('--border-light', hexMix(t.bg, t.accent, 0.34));
   var btn = document.getElementById('themeCycleBtn');
   if (btn) {
-    var n = btn.querySelector('.theme-name');
-    var d = btn.querySelector('.theme-dot-preview');
-    if (n) n.textContent = t.name;
-    if (d) { d.style.background = t.accent; d.style.boxShadow = '0 0 0.375rem ' + t.accent; }
+    var ic = btn.querySelector('.theme-icon-fill');
+    if (ic) ic.style.fill = t.accent;
+    btn.setAttribute('title', 'Theme: ' + t.name + ' — click to cycle');
   }
   try { localStorage.setItem('scalien-theme', idx); } catch(e) {}
 }
