@@ -56,31 +56,31 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 .sel option{background:var(--bg3)}
 
 /* Fretboard */
-.fretboard-container{position:relative;width:100%;overflow-x:auto;padding-bottom:0.5rem}
-.fretboard{position:relative;min-width:800px;background:linear-gradient(180deg,#1a0a10 0%,#2a1818 50%,#1a0a10 100%);border-radius:0.375rem;border:0.0625rem solid var(--border);overflow:hidden}
+.fretboard-container{position:relative;width:100%;overflow-x:auto;padding-bottom:8px}
+.fretboard{position:relative;min-width:800px;background:linear-gradient(180deg,#1a0a10 0%,#2a1818 50%,#1a0a10 100%);border-radius:6px;border:1px solid var(--border);overflow:hidden}
 .fret-table{border-collapse:collapse;width:100%}
 .fret-row{position:relative;display:table-row}
-.fret-cell{position:relative;height:2.625rem;border-bottom:0.0625rem solid rgba(180,160,140,0.15);border-right:0.125rem solid rgba(180,160,140,0.2)}
-.fnut{position:absolute;left:0;top:0;bottom:0;width:0.3125rem;background:rgba(230,210,180,0.85);z-index:3;box-shadow:0 0 0.25rem rgba(230,210,180,.3)}
-.fret-num{text-align:center;font-size:18px;color:var(--text-dim);font-family:'Orbitron',sans-serif;padding:0.125rem 0 0.25rem}
+.fret-cell{position:relative;height:42px;border-bottom:1px solid rgba(180,160,140,0.15);border-right:2px solid rgba(180,160,140,0.2)}
+.fnut{position:absolute;left:0;top:0;bottom:0;width:5px;background:rgba(230,210,180,0.85);z-index:3;box-shadow:0 0 4px rgba(230,210,180,.3)}
+.fret-num{text-align:center;font-size:9px;color:var(--text-dim);font-family:'Orbitron',sans-serif;padding:2px 0 4px}
 
 /* String lines - thick at bottom, thin at top */
 .string-line{position:absolute;top:0;bottom:0;width:0;z-index:1;pointer-events:none}
-.s0{left:8.33%;border-left:0.15625rem solid rgba(200,190,180,.55)}
-.s1{left:25%;border-left:0.125rem solid rgba(200,190,180,.5)}
-.s2{left:41.67%;border-left:0.09375rem solid rgba(200,190,180,.45)}
-.s3{left:58.33%;border-left:0.09375rem solid rgba(210,200,170,.5)}
-.s4{left:75%;border-left:0.0625rem solid rgba(210,200,170,.55)}
-.s5{left:91.67%;border-left:0.0625rem solid rgba(210,200,170,.6)}
+.s0{left:8.33%;border-left:2.5px solid rgba(200,190,180,.55)}
+.s1{left:25%;border-left:2px solid rgba(200,190,180,.5)}
+.s2{left:41.67%;border-left:1.5px solid rgba(200,190,180,.45)}
+.s3{left:58.33%;border-left:1.5px solid rgba(210,200,170,.5)}
+.s4{left:75%;border-left:1px solid rgba(210,200,170,.55)}
+.s5{left:91.67%;border-left:1px solid rgba(210,200,170,.6)}
 
 /* Note dots */
-.note-dot{position:absolute;width:2.125rem;height:2.125rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;z-index:4;transform:translate(-50%,-50%);cursor:pointer;transition:all .1s;box-shadow:0 0.125rem 0.375rem rgba(0,0,0,.4)}
+.note-dot{position:absolute;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;z-index:4;transform:translate(-50%,-50%);cursor:pointer;transition:all .1s;box-shadow:0 2px 6px rgba(0,0,0,.4)}
 .note-dot:hover{transform:translate(-50%,-50%) scale(1.2);z-index:6}
-.note-dot .nd{font-size:20px;font-weight:800}
-.note-dot .ni{font-size:14px;font-weight:600;opacity:.7}
-.note-dot.root{background:var(--cyan);color:#000;box-shadow:0 0 0.625rem var(--cyan),0 0.125rem 0.375rem rgba(0,0,0,.4)}
-.note-dot.scale{background:var(--violet);color:#fff;box-shadow:0 0 0.375rem rgba(167,139,250,.4)}
-.note-dot.chord{background:var(--green);color:#000;box-shadow:0 0 0.375rem rgba(52,211,153,.4)}
+.note-dot .nd{font-size:10px;font-weight:800}
+.note-dot .ni{font-size:7px;font-weight:600;opacity:.7}
+.note-dot.root{background:var(--cyan);color:#000;box-shadow:0 0 10px var(--cyan),0 2px 6px rgba(0,0,0,.4)}
+.note-dot.scale{background:var(--violet);color:#fff;box-shadow:0 0 6px rgba(167,139,250,.4)}
+.note-dot.chord{background:var(--green);color:#000;box-shadow:0 0 6px rgba(52,211,153,.4)}
 .note-dot.dimmed{opacity:.15}
 
 /* Mode/Scale info */
@@ -160,15 +160,15 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 /* Repeat Scale toggle */
 .abtn.repeat{border-color:var(--amber);color:var(--amber);background:rgba(251,191,36,.08)}
 .abtn.repeat.active{background:var(--amber);color:#000;box-shadow:0 0 0.875rem rgba(251,191,36,.4)}
-.note-dot.playing{outline:0.125rem solid var(--amber);outline-offset:0.0625rem}
+.note-dot.playing{outline:2px solid var(--amber);outline-offset:1px}
 
 /* Responsive */
 @media(max-width:768px){
   .header h1{font-size:1.1rem}
   .tabs{flex-wrap:wrap}
   .tab{flex:1 1 30%;font-size:.55rem;padding:0.5rem 0.125rem}
-  .fret-cell{height:2.875rem;min-width:2.75rem}
-  .note-dot{width:1.875rem;height:1.875rem;font-size:16px}
+  .fret-cell{height:34px;min-width:38px}
+  .note-dot{width:24px;height:24px;font-size:8px}
   .chord-name-big{font-size:1.8rem}
   .info-grid{grid-template-columns:repeat(2,1fr)}
 }
@@ -847,7 +847,7 @@ function renderScales(){
   var scaleNotes=getScaleNotes(state.scaleKey,intervals);
   var root=state.scaleKey;
 
-  var html='<table class="fret-table"><thead><tr><th style="width:2.5rem"></th>';
+  var html='<table class="fret-table"><thead><tr><th style="width:40px"></th>';
   for(var f=0;f<=state.fretCount;f++){
     html+='<th class="fret-num">'+f+'</th>';
   }
@@ -856,7 +856,7 @@ function renderScales(){
   // Strings from top (high E) to bottom (low E) for display
   for(var s=5;s>=0;s--){
     html+='<tr class="fret-row">';
-    html+='<td style="text-align:center;font-size:20px;color:var(--text-dim);font-family:Orbitron;padding:0 0.25rem">'+STRING_LABELS[s]+'</td>';
+    html+='<td style="text-align:center;font-size:10px;color:var(--text-dim);font-family:Orbitron;padding:0 4px">'+STRING_LABELS[s]+'</td>';
     for(var f=0;f<=state.fretCount;f++){
       var midi=STRINGS[s]+f;
       var note=noteFromStr(s,f);
@@ -885,8 +885,8 @@ function renderScales(){
           ni=(deg+1);
         }
       }
-      var cellStyle='position:relative;height:2.625rem;border-bottom:0.0625rem solid rgba(180,160,140,0.15);border-right:0.125rem solid rgba(180,160,140,0.2);';
-      if(f===0)cellStyle+='border-left:0.25rem solid rgba(230,210,180,0.85);';
+      var cellStyle='position:relative;height:42px;border-bottom:1px solid rgba(180,160,140,0.15);border-right:2px solid rgba(180,160,140,0.2);';
+      if(f===0)cellStyle+='border-left:4px solid rgba(230,210,180,0.85);';
       html+='<td style="'+cellStyle+'">';
       if(cls){
         html+='<div class="note-dot '+cls+'" data-s="'+s+'" data-f="'+f+'" style="left:50%;top:50%" onclick="playNote('+midiToFreq(midi)+',1.2,false)">';
@@ -894,8 +894,8 @@ function renderScales(){
         html+='</div>';
       }else if(isScale&&state.octaveOnly&&!octOk){
         // Show dimmed ghost dot for out-of-octave notes
-        html+='<div class="note-dot dimmed" style="left:50%;top:50%;width:1.875rem;height:1.875rem">';
-        html+='<span class="nd" style="font-size:16px">'+noteName(note,false)+'</span>';
+        html+='<div class="note-dot dimmed" style="left:50%;top:50%;width:22px;height:22px">';
+        html+='<span class="nd" style="font-size:8px">'+noteName(note,false)+'</span>';
         html+='</div>';
       }
       html+='</td>';
@@ -1037,7 +1037,7 @@ function renderChord(){
   document.getElementById('voicingLabel').textContent='voicing '+(state.chordVoicing+1)+' of '+voicings.length;
 
   // Render fretboard
-  var html='<table class="fret-table"><thead><tr><th style="width:2.5rem"></th>';
+  var html='<table class="fret-table"><thead><tr><th style="width:40px"></th>';
   for(var f=0;f<=12;f++){
     html+='<th class="fret-num">'+f+'</th>';
   }
@@ -1045,10 +1045,10 @@ function renderChord(){
 
   for(var s=5;s>=0;s--){
     html+='<tr class="fret-row">';
-    html+='<td style="text-align:center;font-size:20px;color:var(--text-dim);font-family:Orbitron;padding:0 0.25rem">'+STRING_LABELS[s]+'</td>';
+    html+='<td style="text-align:center;font-size:10px;color:var(--text-dim);font-family:Orbitron;padding:0 4px">'+STRING_LABELS[s]+'</td>';
     for(var f=0;f<=12;f++){
-      var cellStyle='position:relative;height:2.625rem;border-bottom:0.0625rem solid rgba(180,160,140,0.15);border-right:0.125rem solid rgba(180,160,140,0.2);';
-      if(f===0)cellStyle+='border-left:0.25rem solid rgba(230,210,180,0.85);';
+      var cellStyle='position:relative;height:42px;border-bottom:1px solid rgba(180,160,140,0.15);border-right:2px solid rgba(180,160,140,0.2);';
+      if(f===0)cellStyle+='border-left:4px solid rgba(230,210,180,0.85);';
       html+='<td style="'+cellStyle+'">';
 
       // Check if this position is in the voicing
@@ -1168,7 +1168,7 @@ function selectMode(idx){
   document.getElementById('modeNotes').textContent=modeNotes.map(function(n){return noteName(n,false)}).join(' — ');
 
   // Render mode fretboard
-  var html='<table class="fret-table"><thead><tr><th style="width:2.5rem"></th>';
+  var html='<table class="fret-table"><thead><tr><th style="width:40px"></th>';
   for(var f=0;f<=12;f++){
     html+='<th class="fret-num">'+f+'</th>';
   }
@@ -1177,13 +1177,13 @@ function selectMode(idx){
   var root=state.modeKey;
   for(var s=5;s>=0;s--){
     html+='<tr class="fret-row">';
-    html+='<td style="text-align:center;font-size:20px;color:var(--text-dim);font-family:Orbitron;padding:0 0.25rem">'+STRING_LABELS[s]+'</td>';
+    html+='<td style="text-align:center;font-size:10px;color:var(--text-dim);font-family:Orbitron;padding:0 4px">'+STRING_LABELS[s]+'</td>';
     for(var f=0;f<=12;f++){
       var note=noteFromStr(s,f);
       var isRoot=note===root;
       var isMode=modeNotes.indexOf(note)!==-1;
-      var cellStyle='position:relative;height:2.625rem;border-bottom:0.0625rem solid rgba(180,160,140,0.15);border-right:0.125rem solid rgba(180,160,140,0.2);';
-      if(f===0)cellStyle+='border-left:0.25rem solid rgba(230,210,180,0.85);';
+      var cellStyle='position:relative;height:42px;border-bottom:1px solid rgba(180,160,140,0.15);border-right:2px solid rgba(180,160,140,0.2);';
+      if(f===0)cellStyle+='border-left:4px solid rgba(230,210,180,0.85);';
       html+='<td style="'+cellStyle+'">';
       if(isRoot){
         html+='<div class="note-dot root" data-s="'+s+'" data-f="'+f+'" style="left:50%;top:50%" onclick="playNote('+midiToFreq(STRINGS[s]+f)+',1.2,true)"><span class="nd">'+noteName(note,false)+'</span></div>';
