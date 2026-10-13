@@ -15,7 +15,7 @@
   --in-tune:var(--green);--sharp:var(--amber);--flat:var(--rose);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{font-size:16px}
+html{font-size:32px}
 body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;position:relative}
 
 /* Stars background */
@@ -62,7 +62,7 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 .fret-row{position:relative;display:table-row}
 .fret-cell{position:relative;height:42px;border-bottom:1px solid rgba(180,160,140,0.15);border-right:2px solid rgba(180,160,140,0.2)}
 .fnut{position:absolute;left:0;top:0;bottom:0;width:5px;background:rgba(230,210,180,0.85);z-index:3;box-shadow:0 0 4px rgba(230,210,180,.3)}
-.fret-num{text-align:center;font-size:9px;color:var(--text-dim);font-family:'Orbitron',sans-serif;padding:2px 0 4px}
+.fret-num{text-align:center;font-size:18px;color:var(--text-dim);font-family:'Orbitron',sans-serif;padding:2px 0 4px}
 
 /* String lines - thick at bottom, thin at top */
 .string-line{position:absolute;top:0;bottom:0;width:0;z-index:1;pointer-events:none}
@@ -74,10 +74,10 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 .s5{left:91.67%;border-left:1px solid rgba(210,200,170,.6)}
 
 /* Note dots */
-.note-dot{position:absolute;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;z-index:4;transform:translate(-50%,-50%);cursor:pointer;transition:all .1s;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.note-dot{position:absolute;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;z-index:4;transform:translate(-50%,-50%);cursor:pointer;transition:all .1s;box-shadow:0 2px 6px rgba(0,0,0,.4)}
 .note-dot:hover{transform:translate(-50%,-50%) scale(1.2);z-index:6}
-.note-dot .nd{font-size:10px;font-weight:800}
-.note-dot .ni{font-size:7px;font-weight:600;opacity:.7}
+.note-dot .nd{font-size:20px;font-weight:800}
+.note-dot .ni{font-size:14px;font-weight:600;opacity:.7}
 .note-dot.root{background:var(--cyan);color:#000;box-shadow:0 0 10px var(--cyan),0 2px 6px rgba(0,0,0,.4)}
 .note-dot.scale{background:var(--violet);color:#fff;box-shadow:0 0 6px rgba(167,139,250,.4)}
 .note-dot.chord{background:var(--green);color:#000;box-shadow:0 0 6px rgba(52,211,153,.4)}
@@ -100,7 +100,7 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 
 /* Voicing nav */
 .voicing-nav{display:flex;align-items:center;justify-content:center;gap:12px}
-.vnav-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text-muted);font-size:14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.vnav-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text-muted);font-size:28px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center}
 .vnav-btn:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 8px rgba(34,211,238,.15)}
 .vnav-label{font-family:'Orbitron',sans-serif;font-size:.65rem;color:var(--text-dim);min-width:100px;text-align:center}
 
@@ -167,8 +167,8 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
   .header h1{font-size:1.1rem}
   .tabs{flex-wrap:wrap}
   .tab{flex:1 1 30%;font-size:.55rem;padding:8px 2px}
-  .fret-cell{height:34px;min-width:38px}
-  .note-dot{width:24px;height:24px;font-size:8px}
+  .fret-cell{height:46px;min-width:44px}
+  .note-dot{width:30px;height:30px;font-size:16px}
   .chord-name-big{font-size:1.8rem}
   .info-grid{grid-template-columns:repeat(2,1fr)}
 }
@@ -264,8 +264,8 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
       <div style="flex:1"></div>
       <span class="label">Shape:</span>
       <span id="shapeLabel" style="font-family:'Orbitron',sans-serif;font-size:.6rem;color:var(--accent);min-width:80px">—</span>
-      <button class="vnav-btn" style="width:28px;height:28px;font-size:11px" onclick="prevShape()">◀</button>
-      <button class="vnav-btn" style="width:28px;height:28px;font-size:11px" onclick="nextShape()">▶</button>
+      <button class="vnav-btn" style="width:32px;height:32px;font-size:22px" onclick="prevShape()">◀</button>
+      <button class="vnav-btn" style="width:32px;height:32px;font-size:22px" onclick="nextShape()">▶</button>
       <button class="abtn play" onclick="playScaleShape()" style="height:32px;padding:0 12px;font-size:.6rem">▶ Play Shape</button>
       <button class="abtn repeat" id="repeatBtn" onclick="toggleRepeatScale()" style="height:32px;padding:0 12px;font-size:.6rem" title="Loop the scale">↻ Repeat Scale</button>
     </div>
@@ -856,7 +856,7 @@ function renderScales(){
   // Strings from top (high E) to bottom (low E) for display
   for(var s=5;s>=0;s--){
     html+='<tr class="fret-row">';
-    html+='<td style="text-align:center;font-size:10px;color:var(--text-dim);font-family:Orbitron;padding:0 4px">'+STRING_LABELS[s]+'</td>';
+    html+='<td style="text-align:center;font-size:20px;color:var(--text-dim);font-family:Orbitron;padding:0 4px">'+STRING_LABELS[s]+'</td>';
     for(var f=0;f<=state.fretCount;f++){
       var midi=STRINGS[s]+f;
       var note=noteFromStr(s,f);
@@ -894,8 +894,8 @@ function renderScales(){
         html+='</div>';
       }else if(isScale&&state.octaveOnly&&!octOk){
         // Show dimmed ghost dot for out-of-octave notes
-        html+='<div class="note-dot dimmed" style="left:50%;top:50%;width:22px;height:22px">';
-        html+='<span class="nd" style="font-size:8px">'+noteName(note,false)+'</span>';
+        html+='<div class="note-dot dimmed" style="left:50%;top:50%;width:30px;height:30px">';
+        html+='<span class="nd" style="font-size:16px">'+noteName(note,false)+'</span>';
         html+='</div>';
       }
       html+='</td>';
@@ -1045,7 +1045,7 @@ function renderChord(){
 
   for(var s=5;s>=0;s--){
     html+='<tr class="fret-row">';
-    html+='<td style="text-align:center;font-size:10px;color:var(--text-dim);font-family:Orbitron;padding:0 4px">'+STRING_LABELS[s]+'</td>';
+    html+='<td style="text-align:center;font-size:20px;color:var(--text-dim);font-family:Orbitron;padding:0 4px">'+STRING_LABELS[s]+'</td>';
     for(var f=0;f<=12;f++){
       var cellStyle='position:relative;height:42px;border-bottom:1px solid rgba(180,160,140,0.15);border-right:2px solid rgba(180,160,140,0.2);';
       if(f===0)cellStyle+='border-left:4px solid rgba(230,210,180,0.85);';
@@ -1177,7 +1177,7 @@ function selectMode(idx){
   var root=state.modeKey;
   for(var s=5;s>=0;s--){
     html+='<tr class="fret-row">';
-    html+='<td style="text-align:center;font-size:10px;color:var(--text-dim);font-family:Orbitron;padding:0 4px">'+STRING_LABELS[s]+'</td>';
+    html+='<td style="text-align:center;font-size:20px;color:var(--text-dim);font-family:Orbitron;padding:0 4px">'+STRING_LABELS[s]+'</td>';
     for(var f=0;f<=12;f++){
       var note=noteFromStr(s,f);
       var isRoot=note===root;
