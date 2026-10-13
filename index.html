@@ -289,6 +289,13 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
   <!-- ═══ SCALES PANEL ═══ -->
   <div class="panel active" id="panel-scales">
     <div class="dash-panel">
+      <div class="dash-panel-title">Fretboard</div>
+      <div class="fretboard-container">
+        <div class="fretboard" id="scaleFretboard"></div>
+      </div>
+    </div>
+
+    <div class="dash-panel">
       <div class="dash-panel-title">Scale Controls</div>
       <div class="controls-row">
         <span class="label">Key:</span>
@@ -314,13 +321,6 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
         <label class="oct-chk"><input type="checkbox" id="oct4" checked onchange="renderScales()"><span>4</span></label>
         <label class="oct-chk"><input type="checkbox" id="oct5" checked onchange="renderScales()"><span>5</span></label>
         <button class="oct-toggle" id="octaveToggle" onclick="toggleOctaveFilter()">Show chosen only</button>
-      </div>
-    </div>
-
-    <div class="dash-panel">
-      <div class="dash-panel-title">Fretboard</div>
-      <div class="fretboard-container">
-        <div class="fretboard" id="scaleFretboard"></div>
       </div>
     </div>
 
