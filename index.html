@@ -84,8 +84,9 @@ body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--te
 .note-dot.dimmed{opacity:.15}
 
 /* Mode/Scale info */
-.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(7.5rem,1fr));gap:0.5rem}
+.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem}
 .info-cell{background:var(--bg3);border:0.0625rem solid var(--border);border-radius:0.5rem;padding:0.625rem;text-align:center}
+.info-cell.wide{grid-column:span 2}
 .info-cell .ilabel{font-family:'Orbitron',sans-serif;font-size:.55rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.03125rem;margin-bottom:0.25rem}
 .info-cell .ivalue{font-size:1rem;font-weight:700;color:var(--text)}
 .info-cell .ivalue.c{color:var(--cyan)}
@@ -908,9 +909,9 @@ function renderScales(){
   // Scale info
   var noteNames=scaleNotes.map(function(n){return noteName(n,false)});
   var infoHtml='';
+  infoHtml+='<div class="info-cell wide"><div class="ilabel">Scale</div><div class="ivalue">'+state.scaleType.split('(')[0].trim()+'</div></div>';
+  infoHtml+='<div class="info-cell wide"><div class="ilabel">Notes</div><div class="ivalue v">'+noteNames.join(' — ')+'</div></div>';
   infoHtml+='<div class="info-cell"><div class="ilabel">Key</div><div class="ivalue c">'+noteName(state.scaleKey,false)+'</div></div>';
-  infoHtml+='<div class="info-cell"><div class="ilabel">Scale</div><div class="ivalue">'+state.scaleType.split('(')[0].trim()+'</div></div>';
-  infoHtml+='<div class="info-cell"><div class="ilabel">Notes</div><div class="ivalue v">'+noteNames.join(' — ')+'</div></div>';
   infoHtml+='<div class="info-cell"><div class="ilabel">Intervals</div><div class="ivalue g">'+intervals.join(' ')+'</div></div>';
   infoHtml+='<div class="info-cell"><div class="ilabel">Tonic</div><div class="ivalue c">'+noteName(state.scaleKey,false)+'</div></div>';
   infoHtml+='<div class="info-cell"><div class="ilabel">Notes count</div><div class="ivalue">'+scaleNotes.length+'</div></div>';
